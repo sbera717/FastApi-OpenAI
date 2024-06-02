@@ -32,14 +32,14 @@ jobs:
         EOF
       shell: bash
 
+    - name: Create directory on EC2
+      run: |
+        ssh -o StrictHostKeyChecking=no  ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} 'mkdir -p /home/${{ secrets.EC2_USER }}/app'
+
     - name: Copy files to EC2
       run: |
         scp -o StrictHostKeyChecking=no -r ./* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/app
       shell: bash
-
-    - name: Create directory on EC2
-      run: |
-        ssh -o StrictHostKeyChecking=no  ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} 'mkdir -p /home/${{ secrets.EC2_USER }}/app'
 
     - name: Deploy application on EC2
       run: |
