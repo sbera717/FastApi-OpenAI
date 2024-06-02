@@ -21,7 +21,9 @@ jobs:
     - name: Backup existing deployment
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-        mv /home/${{ secrets.EC2_USER }}/app /home/${{ secrets.EC2_USER }}/app_backup_$(date +%Y%m%d%H%M%S) || true
+        if [ -d "/home/${{ secrets.EC2_USER }}/app" ]; then
+          mv /home/${{ secrets.EC2_USER }}/app /home/${{ secrets.EC2_USER }}/app_backup_$(date +%Y%m%d%H%M%S)
+        fi
         EOF
 
     - name: Copy files to EC2
