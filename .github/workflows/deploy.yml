@@ -1,0 +1,45 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.EC2_KEY }}
+
+    - name: Backup existing deployment
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+        mv /home/${{ secrets.EC2_USER }}/app /home/${{ secrets.EC2_USER }}/app_backup_$(date +%Y%m%d%H%M%S) || true
+        EOF
+
+    - name: Copy files to EC2
+      run: |
+        scp -o StrictHostKeyChecking=no -r . ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/app
+
+    - name: Deploy application on EC2
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+        cd /home/${{ secrets.EC2_USER }}/app
+        # Ensure Python is installed (for Ubuntu)
+        sudo apt-get update
+        sudo apt-get install -y python3 python3-pip
+        python3 -m pip install --upgrade pip
+        # Install application dependencies
+        pip3 install -r requirements.txt
+        # Kill any existing instance of the application
+        pkill -f "uvicorn" || true
+        # Start the FastAPI application
+        nohup uvicorn main:app --host 0.0.0.0 --port 8000 &
+        EOF
