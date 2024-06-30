@@ -1,11 +1,24 @@
 from fastapi import FastAPI
+from models import Test,Test1
+from services import TestService
 
+# Instantiate the FastAPI app
 app = FastAPI()
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+# Instantiate the TestService
+test_service = TestService()
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str = None):
-    return {"item_id": item_id, "q": q}
+# Define the POST endpoint
+@app.post("/allbooks")
+async def get_books(test: Test):
+   return test_service.check(test)  # Call the check method
+
+
+@app.post("/user")
+async def get_response(test1: Test1):
+   return test_service.check1(test1)  # Call the check method
+
+# Run the app using uvicorn
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
