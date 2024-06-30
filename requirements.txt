@@ -2,4 +2,3 @@ fastapi
 openai
 python-dotenv
 uvicorn
-json
