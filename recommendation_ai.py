@@ -9,7 +9,7 @@ max_tokens = 500
 
 _ = load_dotenv(find_dotenv())
 client = OpenAI(
-    api_key="",
+    api_key="s",
     )
 
 def get_book_recommendations(book_title, book_dict, author):
