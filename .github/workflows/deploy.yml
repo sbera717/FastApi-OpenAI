@@ -1,4 +1,4 @@
-name: Deploy to EC2
+name: Deploy to Azure Virtual Machine
 
 on:
   push:
@@ -32,21 +32,21 @@ jobs:
         EOF
       shell: bash
 
-    - name: Create directory on EC2
+    - name: Create directory on Virtual Machine
       run: |
         ssh -o StrictHostKeyChecking=no  ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} 'mkdir -p /home/${{ secrets.EC2_USER }}/app'
 
-    - name: Copy files to EC2
+    - name: Copy files to Virtual Machine
       run: |
         scp -o StrictHostKeyChecking=no -r ./* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/app
       shell: bash
 
-    - name: Deploy application on EC2
+    - name: Deploy application on Virtual Machine
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
         cd /home/${{ secrets.EC2_USER }}/app
         sudo apt-get update
-        sudo apt-get install -y python3 python3-pip python3.10-venv
+        sudo apt-get install -y python3 python3-pip python3.12-venv
         python3 -m pip install --upgrade pip
         python3 -m venv venv
         source venv/bin/activate
