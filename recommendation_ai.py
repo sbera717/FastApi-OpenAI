@@ -1,6 +1,5 @@
 import os
 import ast
-import json
 from openai import OpenAI
 from dotenv import load_dotenv, find_dotenv
 
@@ -25,9 +24,9 @@ def get_book_recommendations(book_title, book_dict, author):
         """
         prompt = f"""
         As a literary curator serving as a librarian at a prestigious book club, your role is to recommend top books similar to {book_title} by {author} strictly from the {book_dict}. 
-        Your task is to select the top four books that closely align with {book_title} while ensuring all recommendations are from the {book_dict} only without including the given book itself. 
-        Output should be a JSON where the keys are of recommended book title and the values are their author.
-        constraint : Don't Recommend anything out of the {book_dict}.
+            Your task is to select the top four books that closely align with {book_title} while ensuring all recommendations are from the {book_dict} only without including the given book itself. 
+            Output should be a JSON where the keys are of recommended book title and the values are their author.
+            constraint : Don't Recommend anything out of the {book_dict}.
 
         List of books:
         {', '.join(book_dict)}
@@ -47,14 +46,16 @@ def get_book_recommendations(book_title, book_dict, author):
             max_tokens=max_tokens
         )
 
-        return json.loads(completion.choices[0].message.content)
+        return ast.literal_eval(completion.choices[0].message.content)
+
     except Exception as e:
-        return {"The function get_book_recommendations gave out the error : ": str(e)}   
+        return {"The function get_book_recommendations gave out the error : ": str(e)}
 
 
 def get_recomm_based_on_sentiment(user_text, book_dict):
 
     try:
+
         system_message = """ You are an emotion classifier and a book recommendation assistant.
         Given a text input, your task is to categorize the text into one of the six basic moods: Happy, Sad, Angry, Fearful, Surprised, or Disgusted. 
         Consider the emotional context and overall sentiment of the text when making your decision.
@@ -78,11 +79,12 @@ def get_recomm_based_on_sentiment(user_text, book_dict):
             messages=messages,
             temperature=temperature,
             max_tokens=max_tokens
-        ) 
+        )
+
         return ast.literal_eval(completion.choices[0].message.content)
         
     except Exception as e:
-        return {"The function get_recomm_based_on_sentiment gave out the error : ": str(e)} 
+        return {"The function get_book_recommendations gave out the error : ": str(e)}
 
 
 # -------------------------- INPUT ----------------------------------
