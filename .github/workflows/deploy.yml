@@ -58,5 +58,5 @@ jobs:
 
     - name: Print application log 
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "tail -n 50 /app/app.log"
+        ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "tail -n 50 app.log"
       shell: bash
