@@ -34,6 +34,6 @@ Ensure that the FastAPI application is configured correctly to connect to the Op
 **Please change the OpenAI key with your OpenAI key; otherwise, it won't work.**
 
 # **Additional Information**
-For more detailed instructions and information about the overall AI BookWise system, please refer to the main **GitHub repository :** https://github.com/sbera717/Library
+For more detailed instructions and information about the overall AI BookWise system, please refer to the main **GitHub repository :** https://github.com/sbera717/BookWise-AI
 
 
